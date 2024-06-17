@@ -98,7 +98,16 @@ authRoutes.get('/', authorize, async (req:Request, res:Response) => {
     }
 })
 
+
+
 authRoutes.put('/', authorize, async (req:Request, res:Response) => {
+    /* 
+    #swagger.tags = ['Usuários']
+    #swagger.summary = 'Permite edição dos dados do usuario'
+    #swagger.description = 'Endpoint para edita dados usuario.'
+    #swagger.path = '/users/id'
+    #swagger.method = 'PUT'
+    */
     try {
        const {name, email, birthday} = req.body;
        let password: string | undefined;

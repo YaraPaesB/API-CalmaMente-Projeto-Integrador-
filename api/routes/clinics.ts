@@ -5,33 +5,12 @@ import mongoose from 'mongoose';
 import { createClinic } from '../services/clinics';
 import { ErrorApi } from '../errors/error';
 import { authorizeAdmin } from '../middleware/authAdmin';
+import { authorizeProfessional } from '../middleware/authProfessional';
 
 export const clinicRoutes = express.Router()
 
 
-
-clinicRoutes.post('/', authorize, async (req:Request, res:Response) => {
-    try {
-        const clinicParams = req.body;
-
-        const clinic = await createClinic(clinicParams);
-
-        res.status(200).json({
-            message: "Clinic created",
-            data: clinic
-        })
-
-        return
-    } catch (error:any) {
-        
-        res.status(error instanceof ErrorApi ? error.getHttpStatus : 400).json({
-            message: error instanceof ErrorApi ? error.getMessage : "Can't create this Clinic",
-            errors: error.errors ?? undefined
-        })
-    }
-});
-
-clinicRoutes.post('/admin', authorizeAdmin, async (req:Request, res:Response) => {
+clinicRoutes.post('/', authorizeAdmin, async (req:Request, res:Response) => {
     try {
         const clinicParams = req.body;
 
@@ -52,7 +31,7 @@ clinicRoutes.post('/admin', authorizeAdmin, async (req:Request, res:Response) =>
     }
 })
 
-clinicRoutes.get('/', authorize,  async (req:Request, res:Response) => {
+clinicRoutes.get('/',  async (req:Request, res:Response) => {
     try {
         const allClinics = await Clinic.find({});
         console.log('oi');
@@ -67,7 +46,7 @@ clinicRoutes.get('/', authorize,  async (req:Request, res:Response) => {
     }
 })
 
-clinicRoutes.get('/:id', authorize, async (req: Request, res: Response) => {
+clinicRoutes.get('/:id', async (req: Request, res: Response) => {
     try {
         const clinicId = req.params.id;
 
@@ -92,7 +71,7 @@ clinicRoutes.get('/:id', authorize, async (req: Request, res: Response) => {
     }
 });
 
-clinicRoutes.get('/:name/filtro', authorize, async (req: Request, res: Response) => {
+clinicRoutes.get('/:name/filtro', async (req: Request, res: Response) => {
     try {
         const clinicName = req.params.filtro;
 
@@ -115,7 +94,7 @@ clinicRoutes.get('/:name/filtro', authorize, async (req: Request, res: Response)
     }
 });
 
-clinicRoutes.put('/:id', authorize, async (req:Request, res:Response) => {
+clinicRoutes.put('/:id', authorizeAdmin, async (req:Request, res:Response) => {
     try {
         const clinicId = req.params.id;
 
@@ -140,7 +119,7 @@ clinicRoutes.put('/:id', authorize, async (req:Request, res:Response) => {
     }
 })
 
-clinicRoutes.delete('/:id', authorize, async (req:Request, res:Response) => {
+clinicRoutes.delete('/:id', authorizeAdmin, async (req:Request, res:Response) => {
     try {
         const clinicId = req.params.id; 
 
