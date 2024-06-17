@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { AdressSchema, ContactSchema } from "../schemas";
-import { Decimal128 } from "mongodb";
 
 
 const ClinicSchema = new mongoose.Schema({

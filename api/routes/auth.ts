@@ -1,10 +1,3 @@
-/**
- * @swagger
- * tags:
- *   name: Authentication
- *   description: Authentication endpoints
- */
-
 import express, { Request, Response, request } from 'express';
 import { User } from '../models/user';
 import bcrypt from 'bcrypt';
@@ -14,14 +7,6 @@ import { userValidator } from '../validators/users';
 
 export const authRoutes = express.Router();
 
-
-/* 
-    * #swagger.tags = ['Usuários']
-    * #swagger.summary = 'Adiciona um novo usuário ao sistema'
-    * #swagger.description = 'Endpoint para adicionar um novo usuário.'    
-    * #swagger.path = '/usuarios'
-    * #swagger.method = 'POST'
-    */
 authRoutes.post('/', async (req:Request, res:Response) => {
     try {
         const userParams = req.body;

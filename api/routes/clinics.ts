@@ -2,6 +2,9 @@ import express, { Request, Response, request } from 'express';
 import { Clinic } from '../models/clinics';
 import { authorize } from '../middleware/auth';
 import mongoose from 'mongoose';
+import { createClinic } from '../services/clinics';
+import { ErrorApi } from '../errors/error';
+import { authorizeAdmin } from '../middleware/authAdmin';
 
 export const clinicRoutes = express.Router()
 
@@ -9,17 +12,9 @@ export const clinicRoutes = express.Router()
 
 clinicRoutes.post('/', authorize, async (req:Request, res:Response) => {
     try {
-        const clinicParams = req.body
-        
-        const clinicAlreadyExists = await Clinic.findOne({email: clinicParams.email})
+        const clinicParams = req.body;
 
-        if (clinicAlreadyExists) {
-            res.status(400).json({
-                message: "Clinic Already Exists"
-            })
-        }
-
-        const clinic = await Clinic.create(clinicParams)
+        const clinic = await createClinic(clinicParams);
 
         res.status(200).json({
             message: "Clinic created",
@@ -28,10 +23,30 @@ clinicRoutes.post('/', authorize, async (req:Request, res:Response) => {
 
         return
     } catch (error:any) {
-        console.log(error);
         
-        res.status(400).json({
-            message: "Can't create this Clinic",
+        res.status(error instanceof ErrorApi ? error.getHttpStatus : 400).json({
+            message: error instanceof ErrorApi ? error.getMessage : "Can't create this Clinic",
+            errors: error.errors ?? undefined
+        })
+    }
+});
+
+clinicRoutes.post('/admin', authorizeAdmin, async (req:Request, res:Response) => {
+    try {
+        const clinicParams = req.body;
+
+        const clinic = await createClinic(clinicParams);
+
+        res.status(200).json({
+            message: "Clinic created",
+            data: clinic
+        })
+
+        return
+    } catch (error:any) {
+        
+        res.status(error instanceof ErrorApi ? error.getHttpStatus : 400).json({
+            message: error instanceof ErrorApi ? error.getMessage : "Can't create this Clinic",
             errors: error.errors ?? undefined
         })
     }
