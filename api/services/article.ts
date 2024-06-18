@@ -1,9 +1,10 @@
+import mongoose from "mongoose"
 import { ErrorApi } from "../errors/error"
 import { Articles } from "../models/article"
 
 
 
-export const createArticle = async (articleParams:any) => {
+export const createArticle = async (articleParams:any, userId: mongoose.Types.ObjectId) => {
     try {
         const articleExists = await Articles.findOne({title: articleParams.title})
 
@@ -11,7 +12,7 @@ export const createArticle = async (articleParams:any) => {
            throw new ErrorApi(400, 'Article already exists')
         }
 
-        const article = await Articles.create(articleParams)
+        const article = await Articles.create({...articleParams, author: userId})
 
         return article;
     } catch (error:any) {
@@ -19,9 +20,9 @@ export const createArticle = async (articleParams:any) => {
     }
 }  
 
-export const updateArticle = async (articleId:any, articleParams:any) => {
+export const updateArticle = async (articleId:any, articleParams:any, author: mongoose.Types.ObjectId) => {
     try {
-        const updatedArticle = await Articles.findByIdAndUpdate(articleId, articleParams)
+        const updatedArticle = await Articles.findOneAndUpdate({_id: articleId, author}, articleParams)
 
         if (!updatedArticle) {
             throw new ErrorApi(404, "Article not found")

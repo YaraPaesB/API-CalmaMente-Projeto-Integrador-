@@ -17,7 +17,11 @@ const ArticleSchema = new mongoose.Schema({
     references: {
         type:ReferenceSchema,
         required:true
-    }
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+    },
 
 }, {timestamps: true})
 

@@ -10,18 +10,19 @@ export const articleRoutes = express.Router()
 
 articleRoutes.post('/', authorizeAdmin, async (req:Request, res:Response) => {
     try {
-        const articleParams = req.body
+        const articleParams = req.body;
 
-        const article = await createArticle(articleParams)
+        const article = await createArticle(articleParams, req.body.auth._id);
 
-        res.status(200).json(article)
+        res.status(200).json(article);
         
         return
     } catch (error:any) {
         res.status(error instanceof ErrorApi ? error.getHttpStatus : 400).json({
             message: error instanceof ErrorApi ? error.getMessage : "Can't create this Article",
             errors: error.errors ?? undefined
-        })
+        });
+        return;
     }
 })
 
@@ -29,7 +30,7 @@ articleRoutes.post('/', authorizeProfessional, async (req:Request, res:Response)
     try {
         const articleParams = req.body
 
-        const article = await createArticle(articleParams)
+        const article = await createArticle(articleParams, req.body.auth._id)
 
         res.status(200).json(article)
         
@@ -61,7 +62,7 @@ articleRoutes.put('/:id', authorizeAdmin, async (req:Request, res:Response) => {
 
         const articleParams = req.body;
 
-        const updatedArticle = await updateArticle(articleId, articleParams)
+        const updatedArticle = await updateArticle(articleId, articleParams, req.body.auth._id)
 
         res.status(200).json({
             message:"Updated Successfully",
@@ -82,7 +83,7 @@ articleRoutes.put('/:id', authorizeProfessional, async (req:Request, res:Respons
 
         const articleParams = req.body;
 
-        const updatedArticle = await updateArticle(articleId, articleParams)
+        const updatedArticle = await updateArticle(articleId, articleParams, req.body.auth._id)
 
         res.status(200).json({
             message:"Updated Successfully",
