@@ -65,6 +65,8 @@ authRoutes.post('/login', async (req:Request, res:Response) => {
               name: userExist.name,
               email: userExist.email,
               birthday: userExist.birthday,
+              isAdmin: userExist.isAdmin,
+              isProfissional: userExist.isProfessional,
               createdAt: userExist.createdAt,
             },
             process.env.JWT_SECRET as string,
@@ -157,15 +159,16 @@ authRoutes.put('/', authorize, async (req:Request, res:Response) => {
 
 authRoutes.delete('/', async (req:Request, res:Response) => {
     try {
-        const userExist = await User.findById(req.body._id);
+        const userExist = await User.findById(req.body.auth._id);
 
         if (!userExist) {
             res.status(404).json({
                 message: "User not found"
             })
+            return
         }
 
-        await User.deleteOne({_id: req.body._id});
+        await User.deleteOne({_id: req.body.auth._id});
         
         res.status(200).json({
             success: true,
