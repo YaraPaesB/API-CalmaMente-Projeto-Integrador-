@@ -157,7 +157,7 @@ authRoutes.put('/', authorize, async (req:Request, res:Response) => {
     }
 })
 
-authRoutes.delete('/', async (req:Request, res:Response) => {
+authRoutes.delete('/', authorize, async (req:Request, res:Response) => {
     try {
         const userExist = await User.findById(req.body.auth._id);
 

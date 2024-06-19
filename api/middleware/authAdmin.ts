@@ -21,7 +21,7 @@ export const authorizeAdmin = async (req:Request, res:Response, next:NextFunctio
         req.body.auth = userExist;
         next();
     } catch (error:any) {
-        res.status(error.message.contains("authenticated") ? 401 : 403).json({
+        res.status(error.message.indexOf("authenticated") ? 401 : 403).json({
             success: false,
             message: error.message
         });

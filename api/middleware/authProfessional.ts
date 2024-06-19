@@ -22,7 +22,10 @@ export const authorizeProfessional = async (req:Request, res:Response, next:Next
         req.body.auth = userExist;
         next();
     } catch (error:any) {
-        res.status(error.message.contains("authenticated") ? 401 : 403).json({
+        console.log(error);
+        console.log(error.message.indexOf("authenticated"));
+        
+        res.status(error.message.indexOf("authenticated") ? 401 : 403).json({
             success: false,
             message: error.message
         });
